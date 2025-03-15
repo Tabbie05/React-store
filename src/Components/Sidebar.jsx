@@ -34,11 +34,15 @@ function Sidebar() {
 
     fetchCategories();
   }, []);
-  // console.log(query);
-  // console.log(keyword)
-  // console.log(category)
-  // console.log(min,max)
 
+  const handleMinChange = (e) => {
+    const val = e.target.value;
+    setMin(value ? parseFloat(value) : undefined);
+  };
+  const handleMaxChange = (e) => {
+    const val = e.target.value;
+    setMax(value ? parseFloat(value) : undefined);
+  };
   return (
     <div className="h-screen border-2 w-[300px] p-4 bg-white">
       <h1 className="font-bold text-xl">React Store</h1>
@@ -57,15 +61,15 @@ function Sidebar() {
           type="number"
           className="border-2 w-1/2 px-2"
           placeholder="MIN"
-          value={min}
-          onChange={(e)=>setMin(e.target.value)}
+          value={min ?? ""}
+          onChange={handleMinChange}
         />
         <input
           type="number"
           className="border-2 w-1/2 px-2"
           placeholder="MAX"
-          value={max}
-          onChange={(e)=>setMax(e.target.value)}
+          value={max ?? ""}
+          onChange={handleMaxChange}
         />
       </div>
 
@@ -75,7 +79,14 @@ function Sidebar() {
         <h2 className="text-xl mt-3">Categories</h2>
         {categories.map((cat, index) => (
           <label key={index} className="block mt-1 text-[20px] ml-1">
-            <input type="radio" name="category" className="mt-1"checked={category === cat} onChange={()=>setCategory(cat)}/> {cat}
+            <input
+              type="radio"
+              name="category"
+              className="mt-1"
+              checked={category === cat}
+              onChange={() => setCategory(cat)}
+            />{" "}
+            {cat}
           </label>
         ))}
       </section>
@@ -94,7 +105,18 @@ function Sidebar() {
         </div>
       </section>
 
-      <button className="h-7 bg-black text-white w-full" onClick={()=>{setQuery("");setCategory("");setKeyword("");setMin(undefined);setMax(undefined)}}>Reset Filters</button>
+      <button
+        className="h-7 bg-black text-white w-full"
+        onClick={() => {
+          setQuery("");
+          setCategory("");
+          setKeyword("");
+          setMin(undefined);
+          setMax(undefined);
+        }}
+      >
+        Reset Filters
+      </button>
     </div>
   );
 }
