@@ -37,11 +37,11 @@ function Sidebar() {
 
   const handleMinChange = (e) => {
     const val = e.target.value;
-    setMin(value ? parseFloat(value) : undefined);
+    setMin(val ? parseFloat(val) : "");
   };
   const handleMaxChange = (e) => {
     const val = e.target.value;
-    setMax(value ? parseFloat(value) : undefined);
+    setMax(val ? parseFloat(val) : "");
   };
   return (
     <div className="h-screen border-2 w-[300px] p-4 bg-white">
@@ -58,14 +58,14 @@ function Sidebar() {
       {/* Price Filter Inputs */}
       <div className="flex gap-2 mt-3">
         <input
-          type="number"
+          type="text"
           className="border-2 w-1/2 px-2"
           placeholder="MIN"
           value={min ?? ""}
           onChange={handleMinChange}
         />
         <input
-          type="number"
+          type="text"
           className="border-2 w-1/2 px-2"
           placeholder="MAX"
           value={max ?? ""}

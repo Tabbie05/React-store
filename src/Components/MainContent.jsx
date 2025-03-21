@@ -35,7 +35,35 @@ function MainContent() {
       console.log(e)
     })
  
-  }, [currentPage,keyword]);
+  }, [currentPage,keyword,category,min,max]);
+
+  const getFilteredProducts = () => {
+    let filtered = [...products]; 
+
+    if (category) {
+        filtered = filtered.filter(product => product.category === category);
+    }
+
+    if (min !== undefined && min !== "") {
+        filtered = filtered.filter(product => product.price >= Number(min));
+    }
+
+    if (max !== undefined && max !== "") {
+        filtered = filtered.filter(product => product.price <= Number(max));
+    }
+
+    if (query) {
+        filtered = filtered.filter(product => 
+            product.title.toLowerCase().includes(query.toLowerCase())
+        );
+    }
+
+    console.log("Filtered Products:", filtered);
+    return filtered;
+};
+
+const filteredProducts = getFilteredProducts();
+
 
   return (
     <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-pink-200">
