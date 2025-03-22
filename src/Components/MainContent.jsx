@@ -2,19 +2,16 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { LuTally3 } from "react-icons/lu";
 import { useFilter } from "./FilterContext";
+
 function MainContent() {
   const {
     query,
-    setQuery,
     category,
-    setCategory,
     min,
-    setMin,
     max,
-    setMax,
     keyword,
-    setKeyword,
   } = useFilter();
+
   const [products, setproducts] = useState([]);
   const [filter, setfilter] = useState("all");
   const [dropdownOpen, setdropdownOpen] = useState(false);
@@ -28,42 +25,51 @@ function MainContent() {
     if (keyword) {
       url = `https://dummyjson.com/products/search?q=${keyword}`;
     }
-    axios.get(url).then(res =>{
-      setproducts(res.data.products)
-      console.log(res.data.products)
-    }).catch(e =>{
-      console.log(e)
-    })
- 
-  }, [currentPage,keyword,category,min,max]);
+
+    axios.get(url)
+      .then(res => {
+        setproducts(res.data.products || []);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }, [currentPage, keyword]);
 
   const getFilteredProducts = () => {
-    let filtered = [...products]; 
+    let filtered = [...products];
 
     if (category) {
-        filtered = filtered.filter(product => product.category === category);
+      filtered = filtered.filter(product => product.category === category);
     }
 
     if (min !== undefined && min !== "") {
-        filtered = filtered.filter(product => product.price >= Number(min));
+      filtered = filtered.filter(product => product.price >= Number(min));
     }
 
     if (max !== undefined && max !== "") {
-        filtered = filtered.filter(product => product.price <= Number(max));
+      filtered = filtered.filter(product => product.price <= Number(max));
     }
 
     if (query) {
-        filtered = filtered.filter(product => 
-            product.title.toLowerCase().includes(query.toLowerCase())
-        );
+      filtered = filtered.filter(product =>
+        product.title.toLowerCase().includes(query.toLowerCase())
+      );
     }
 
-    console.log("Filtered Products:", filtered);
-    return filtered;
-};
+    switch (filter) {
+      case "expensive":
+        return [...filtered].sort((a, b) => b.price - a.price);
+      case "cheap":
+        return [...filtered].sort((a, b) => a.price - b.price);
+      case "popular":
+        return [...filtered].sort((a, b) => b.rating - a.rating);
+      default:
+        return filtered;
+    }
+  };
+  console.log(filter)
 
-const filteredProducts = getFilteredProducts();
-
+  const filteredProducts = getFilteredProducts();
 
   return (
     <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-pink-200">
@@ -103,6 +109,8 @@ const filteredProducts = getFilteredProducts();
           </div>
         )}
       </div>
+
+      
     </section>
   );
 }
