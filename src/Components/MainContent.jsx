@@ -94,7 +94,7 @@ function MainContent() {
             >
               Cheap
             </button>
-            <button
+            <button 
               onClick={() => setfilter("expensive")}
               className="block px-4 py-2 w-full text-left hover:bg-gray-200"
             >
