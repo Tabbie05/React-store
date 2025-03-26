@@ -2,21 +2,17 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { LuTally3 } from "react-icons/lu";
 import { useFilter } from "./FilterContext";
+import BookCard from "./BookCard";
 
 function MainContent() {
-  const {
-    query,
-    category,
-    min,
-    max,
-    keyword,
-  } = useFilter();
-
+  const { query, category, min, max, keyword } = useFilter();
   const [products, setproducts] = useState([]);
   const [filter, setfilter] = useState("all");
   const [dropdownOpen, setdropdownOpen] = useState(false);
   const [currentPage, setcurrentPage] = useState(1);
   const itemPerPage = 12;
+  const totalProducts = 100;
+  const totalPages = Math.ceil(totalProducts / itemPerPage);
 
   useEffect(() => {
     let url = `https://dummyjson.com/products?limit=${itemPerPage}&skip=${
@@ -26,32 +22,33 @@ function MainContent() {
       url = `https://dummyjson.com/products/search?q=${keyword}`;
     }
 
-    axios.get(url)
-      .then(res => {
+    axios
+      .get(url)
+      .then((res) => {
         setproducts(res.data.products || []);
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
       });
-  }, [currentPage, keyword]);
+  }, [currentPage, keyword, max, min, query, category]);
 
   const getFilteredProducts = () => {
     let filtered = [...products];
 
     if (category) {
-      filtered = filtered.filter(product => product.category === category);
+      filtered = filtered.filter((product) => product.category === category);
     }
 
     if (min !== undefined && min !== "") {
-      filtered = filtered.filter(product => product.price >= Number(min));
+      filtered = filtered.filter((product) => product.price >= Number(min));
     }
 
     if (max !== undefined && max !== "") {
-      filtered = filtered.filter(product => product.price <= Number(max));
+      filtered = filtered.filter((product) => product.price <= Number(max));
     }
 
     if (query) {
-      filtered = filtered.filter(product =>
+      filtered = filtered.filter((product) =>
         product.title.toLowerCase().includes(query.toLowerCase())
       );
     }
@@ -67,14 +64,18 @@ function MainContent() {
         return filtered;
     }
   };
-  console.log(filter)
 
   const filteredProducts = getFilteredProducts();
 
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setcurrentPage(page);
+    }
+  };
+
   return (
-    <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-pink-200">
+    <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5">
       <div className="relative inline-block">
-        {/* Filter Button */}
         <button
           onClick={() => setdropdownOpen(!dropdownOpen)}
           className="px-4 py-2 rounded-full flex items-center gap-2 bg-white border border-gray-300 shadow-md hover:bg-gray-100 transition-all"
@@ -85,7 +86,6 @@ function MainContent() {
             : filter.charAt(0).toUpperCase() + filter.slice(1)}
         </button>
 
-        {/* Dropdown Menu */}
         {dropdownOpen && (
           <div className="absolute left-0 mt-2 w-44 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
             <button
@@ -94,7 +94,7 @@ function MainContent() {
             >
               Cheap
             </button>
-            <button 
+            <button
               onClick={() => setfilter("expensive")}
               className="block px-4 py-2 w-full text-left hover:bg-gray-200"
             >
@@ -110,7 +110,65 @@ function MainContent() {
         )}
       </div>
 
-      
+      {/* Display Products */}
+      <div className="grid grid-cols-4 gap-4 mt-3">
+        {filteredProducts.map((product) => (
+          <BookCard
+            key={product.id}
+            id={product.id}
+            title={product.title}
+            image={product.thumbnail}
+            price={product.price}
+          />
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center items-center mt-4 gap-2">
+        {/* Previous Button */}
+        <button
+          className={`border p-2 rounded ${
+            currentPage === 1
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-gray-200"
+          }`}
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+
+        {/* Page Numbers */}
+        {[...Array(Math.min(totalPages, 5))].map((_, i) => {
+          const page = i + 1;
+          return (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              className={`border px-3 py-1 rounded-full ${
+                currentPage === page
+                  ? "bg-black text-white"
+                  : "hover:bg-gray-200"
+              }`}
+            >
+              {page}
+            </button>
+          );
+        })}
+
+        {/* Next Button */}
+        <button
+          className={`border p-2 rounded ${
+            currentPage === totalPages
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-gray-600"
+          }`}
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </section>
   );
 }
