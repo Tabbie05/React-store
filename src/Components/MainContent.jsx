@@ -72,13 +72,13 @@ function MainContent() {
       setcurrentPage(page);
     }
   };
-
+  console.log(filteredProducts)
   return (
-    <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5">
+    <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-white">
       <div className="relative inline-block">
         <button
           onClick={() => setdropdownOpen(!dropdownOpen)}
-          className="px-4 py-2 rounded-full flex items-center gap-2 bg-white border border-gray-300 shadow-md hover:bg-gray-100 transition-all"
+          className="px-4 py-2 rounded-full flex items-center gap-1 bg-white border border-gray-300 shadow-md hover:bg-gray-100 transition-all"
         >
           <LuTally3 size={25} />
           {filter === "all"
@@ -119,6 +119,7 @@ function MainContent() {
             title={product.title}
             image={product.thumbnail}
             price={product.price}
+            discountPercentage = {product.discountPercentage}
           />
         ))}
       </div>

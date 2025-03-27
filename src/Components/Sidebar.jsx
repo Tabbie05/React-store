@@ -44,7 +44,7 @@ function Sidebar() {
     setMax(val ? parseFloat(val) : "");
   };
   return (
-    <div className="h-screen border-2 w-[300px] p-4 bg-white">
+    <div className="h-screen border-2 w-[250px] p-4 bg-white">
       <h1 className="font-bold text-xl">React Store</h1>
 
       {/* Search Input */}
