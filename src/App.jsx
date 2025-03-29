@@ -18,11 +18,9 @@ function App() {
             <Route path="/" element={<MainContent />}/>
             <Route path="/Product/:id" element={<ProductPage />}/>
           </Routes>
+          <TopSeller/>
         </div>
-        <div className="">
-          <TopSeller />
-          <PopularBlogs />
-        </div>
+        
       </Router>
      
    

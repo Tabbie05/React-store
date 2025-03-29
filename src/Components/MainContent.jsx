@@ -72,7 +72,7 @@ function MainContent() {
       setcurrentPage(page);
     }
   };
-  console.log(filteredProducts)
+  // console.log(filteredProducts)
   return (
     <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-white">
       <div className="relative inline-block">
