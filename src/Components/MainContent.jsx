@@ -74,7 +74,7 @@ function MainContent() {
   };
   // console.log(filteredProducts)
   return (
-    <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-white">
+    <section className="xl:w-[53rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-white">
       <div className="relative inline-block">
         <button
           onClick={() => setdropdownOpen(!dropdownOpen)}
