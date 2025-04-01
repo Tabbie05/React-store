@@ -18,7 +18,10 @@ function App() {
             <Route path="/" element={<MainContent />}/>
             <Route path="/Product/:id" element={<ProductPage />}/>
           </Routes>
+          <div className="flex flex-col">
           <TopSeller/>
+          <PopularBlogs />
+          </div>
         </div>
         
       </Router>
