@@ -1,54 +1,62 @@
-// ... (previous imports remain the same)
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 function ProductPage() {
-  // ... (previous state and effects remain the same)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`https://dummyjson.com/products/${id}`)
+        .then((res) => {
+          setProduct(res.data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [id]);
+
+  if (!product) {
+    return <h1 className="text-center text-xl font-bold mt-20">Loading...</h1>;
+  }
+
+  const discountPrice = (product.price - (product.price * product.discountPercentage) / 100).toFixed(2);
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-5 bg-white shadow-lg rounded-lg">
+    <div className="max-w-6xl mx-auto p-5">
       <button onClick={() => navigate(-1)} className="text-blue-500 mb-5">
         ← Back
       </button>
-      <div className="flex flex-col md:flex-row mt-5 gap-8">
-        {/* Product Image - made larger and responsive */}
+      
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Product Image */}
         <div className="md:w-1/2">
           <img
             src={product.images?.[0]}
             alt={product.title}
-            className="w-full h-auto max-h-[500px] rounded-lg shadow-md object-contain"
+            className="w-full h-auto max-h-[500px] object-contain rounded-lg"
           />
         </div>
 
-        {/* Product Info - adjusted spacing */}
+        {/* Product Info */}
         <div className="md:w-1/2">
           <p className="text-gray-500 uppercase">{product.category}</p>
-          <h1 className="text-2xl font-bold mt-2">{product.title}</h1>
+          <h1 className="text-3xl font-bold mt-2">{product.title}</h1>
           <p className="text-gray-700 mt-4">{product.description}</p>
 
-          {/* Pricing Section */}
           <div className="mt-6">
-            <span className="text-2xl font-bold text-gray-900">${discountPrice} </span>
+            <span className="text-3xl font-bold">${discountPrice}</span>
             <span className="text-gray-500 line-through ml-2">${product.price}</span>
-            <p className="text-green-500 text-sm font-semibold">{product.discountPercentage}% Off</p>
-            <p className="text-gray-500 text-sm">(Incl. of all taxes)</p>
+            <span className="text-green-500 ml-2">{product.discountPercentage}% OFF</span>
+            <p className="text-gray-500 mt-1">(Incl. of all taxes)</p>
           </div>
 
-          {/* Additional Details */}
-          <div className="mt-6 space-y-2">
-            <p className="text-gray-600">
-              <span className="font-semibold">Brand:</span> {product.brand}
-            </p>
-            <p className="text-gray-600">
-              <span className="font-semibold">Availability:</span> {product.availabilityStatus || "In Stock"}
-            </p>
-            <p className="text-gray-600">
-              <span className="font-semibold">Rating:</span> ⭐ {product.rating}
-            </p>
-            <p className="text-gray-600">
-              <span className="font-semibold">Tags:</span> {product.tags?.join(", ")}
-            </p>
-            <p className="text-gray-600">
-              <span className="font-semibold">Warranty:</span> {product.warrantyInformation}
-            </p>
+          <div className="mt-6 space-y-3">
+            <p><span className="font-semibold">Brand:</span> {product.brand}</p>
+            <p><span className="font-semibold">Rating:</span> ⭐ {product.rating}</p>
+            <p><span className="font-semibold">Stock:</span> {product.stock} units</p>
           </div>
         </div>
       </div>
