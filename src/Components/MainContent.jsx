@@ -72,9 +72,9 @@ function MainContent() {
       setcurrentPage(page);
     }
   };
-  // console.log(filteredProducts)
+
   return (
-    <section className="xl:w-[53rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-white">
+    <section className="xl:w-[70rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-white">
       <div className="relative inline-block">
         <button
           onClick={() => setdropdownOpen(!dropdownOpen)}
@@ -111,7 +111,7 @@ function MainContent() {
       </div>
 
       {/* Display Products */}
-      <div className="grid grid-cols-4 gap-4 mt-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-3">
         {filteredProducts.map((product) => (
           <BookCard
             key={product.id}
@@ -119,7 +119,7 @@ function MainContent() {
             title={product.title}
             image={product.thumbnail}
             price={product.price}
-            discountPercentage = {product.discountPercentage}
+            discountPercentage={product.discountPercentage}
           />
         ))}
       </div>

@@ -29,7 +29,7 @@ function TopSeller() {
       <h2 className="font-bold text-[30px] mt-2 ml-4">Top Sellers</h2>
       <ul>
         {authors.map((author, i) => (
-          <li key={i} className="flex items-center mt-2">
+          <li key={i} className="flex items-center mt-4">
             <img
               src={author.picture.thumbnail}
               alt={author.name.first}

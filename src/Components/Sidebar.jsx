@@ -1,3 +1,4 @@
+// Sidebar Component
 import React, { useEffect, useState } from "react";
 import axios from "axios"; // Ensure axios is imported
 import { useFilter } from "./FilterContext";
@@ -43,8 +44,9 @@ function Sidebar() {
     const val = e.target.value;
     setMax(val ? parseFloat(val) : "");
   };
+  
   return (
-    <div className="h-screen border-2 w-[230px] p-4 bg-white">
+    <div className="h-screen border-2 w-[300px] p-4 bg-white">
       <h1 className="font-bold text-xl">React Store</h1>
 
       {/* Search Input */}
@@ -74,7 +76,6 @@ function Sidebar() {
       </div>
 
       {/* Categories List */}
-
       <section>
         <h2 className="text-xl mt-3">Categories</h2>
         {categories.map((cat, index) => (
@@ -90,13 +91,15 @@ function Sidebar() {
           </label>
         ))}
       </section>
+
+      {/* Keywords Section */}
       <section>
         <h2 className="text-xl mt-3">Keywords</h2>
         <div>
           {keywords.map((words, index) => (
             <button
               key={index}
-              className="block mt-1 w-full py-1 mb-2 border rounded hover:bg-gray-200 "
+              className="block mt-1 w-full py-1 mb-2 border rounded hover:bg-gray-200"
               onClick={() => setKeyword(words)}
             >
               {words}
@@ -105,8 +108,9 @@ function Sidebar() {
         </div>
       </section>
 
+      {/* Reset Filters Button */}
       <button
-        className="h-7 bg-black text-white w-full"
+        className="h-7 bg-black text-white w-full mt-4"
         onClick={() => {
           setQuery("");
           setCategory("");
