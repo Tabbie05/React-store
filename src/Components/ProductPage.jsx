@@ -1,62 +1,39 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+// ... (previous imports remain the same)
 
 function ProductPage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
-
-  useEffect(() => {
-    if (id) {
-      axios
-        .get(`https://dummyjson.com/products/${id}`)
-        .then((res) => {
-          console.log(res.data);
-          setProduct(res.data);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [id]);
-
-  if (!product) {
-    return <h1 className="text-center text-xl font-bold mt-20">Loading...</h1>;
-  }
-
-  // Calculate discounted price
-  const discountPrice = (product.price - (product.price * product.discountPercentage) / 100).toFixed(2);
+  // ... (previous state and effects remain the same)
 
   return (
-    <div className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-white shadow-lg rounded-lg">
+    <div className="w-full max-w-6xl mx-auto p-5 bg-white shadow-lg rounded-lg">
       <button onClick={() => navigate(-1)} className="text-blue-500 mb-5">
         ← Back
       </button>
-      <div className="flex mt-5">
-        {/* Product Image */}
-        <div>
+      <div className="flex flex-col md:flex-row mt-5 gap-8">
+        {/* Product Image - made larger and responsive */}
+        <div className="md:w-1/2">
           <img
             src={product.images?.[0]}
             alt={product.title}
-            className="h-100 w-200 ml-5 rounded-lg shadow-md object-cover"
+            className="w-full h-auto max-h-[500px] rounded-lg shadow-md object-contain"
           />
         </div>
 
-        {/* Product Info */}
-        <div className="ml-10">
+        {/* Product Info - adjusted spacing */}
+        <div className="md:w-1/2">
           <p className="text-gray-500 uppercase">{product.category}</p>
           <h1 className="text-2xl font-bold mt-2">{product.title}</h1>
-          <p className="text-gray-700 mt-2">{product.description}</p>
+          <p className="text-gray-700 mt-4">{product.description}</p>
 
           {/* Pricing Section */}
-          <div className="mt-4">
-            <span className="text-xl font-bold text-gray-900">${discountPrice} </span>
+          <div className="mt-6">
+            <span className="text-2xl font-bold text-gray-900">${discountPrice} </span>
             <span className="text-gray-500 line-through ml-2">${product.price}</span>
             <p className="text-green-500 text-sm font-semibold">{product.discountPercentage}% Off</p>
             <p className="text-gray-500 text-sm">(Incl. of all taxes)</p>
           </div>
 
           {/* Additional Details */}
-          <div className="mt-4">
+          <div className="mt-6 space-y-2">
             <p className="text-gray-600">
               <span className="font-semibold">Brand:</span> {product.brand}
             </p>
