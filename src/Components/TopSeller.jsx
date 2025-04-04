@@ -30,17 +30,11 @@ function TopSeller() {
       <ul>
         {authors.map((author, i) => (
           <li key={i} className="flex items-center mt-4">
-            <img
-              src={author.picture.thumbnail}
-              alt={author.name.first}
-              className="w-[50px] h-[50px] rounded-full"
-            />
+            <img src={author.picture.thumbnail} alt={author.name.first} className="w-[50px] h-[50px] rounded-full" />
             <h4 className="ml-3">{author.name.first} {author.name.last}</h4>
             <button 
               onClick={() => handleFollow(i)}
-              className={`border ml-4 p-2 text-white rounded-lg ${
-                following[i] ? "bg-red-500" : "bg-black"
-              }`}
+              className={`border ml-4 p-2 text-white rounded-lg ${following[i] ? "bg-red-500" : "bg-black"}`}
             >
               {following[i] ? "Unfollow" : "Follow"}
             </button>

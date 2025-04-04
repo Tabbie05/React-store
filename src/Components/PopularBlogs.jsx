@@ -4,54 +4,14 @@ import { FaRegComment } from "react-icons/fa";
 
 function PopularBlogs() {
   const blogs = [
-    {
-      title: "Top 10 Luxury Watches to Elevate Your Style",
-      author: "Sophia Carter",
-      comments: 85,
-      likes: 320,
-    },
-    {
-      title: "Latest Fashion Trends: What’s Hot in 2024",
-      author: "Ethan Wilson",
-      comments: 120,
-      likes: 450,
-    },
-    {
-      title: "Best Grocery Deals You Shouldn’t Miss!",
-      author: "Olivia Green",
-      comments: 60,
-      likes: 210,
-    },
-    {
-      title: "Makeup Hacks Every Beauty Lover Should Know",
-      author: "Emma Taylor",
-      comments: 95,
-      likes: 380,
-    },
-    {
-      title: "Top 5 Sustainable Fashion Brands to Shop Now",
-      author: "Lucas Martinez",
-      comments: 75,
-      likes: 290,
-    },
-    {
-      title: "How to Style Your Outfits Like a Pro",
-      author: "Ava White",
-      comments: 140,
-      likes: 510,
-    },
-    {
-      title: "Grocery Shopping Tips to Save Money & Time",
-      author: "Noah Brown",
-      comments: 50,
-      likes: 180,
-    },
-    {
-      title: "Best Makeup Brands for Every Skin Type",
-      author: "Liam Anderson",
-      comments: 110,
-      likes: 400,
-    },
+    { title: "Top 10 Luxury Watches to Elevate Your Style", author: "Sophia Carter", comments: 85, likes: 320 },
+    { title: "Latest Fashion Trends: What’s Hot in 2024", author: "Ethan Wilson", comments: 120, likes: 450 },
+    { title: "Best Grocery Deals You Shouldn’t Miss!", author: "Olivia Green", comments: 60, likes: 210 },
+    { title: "Makeup Hacks Every Beauty Lover Should Know", author: "Emma Taylor", comments: 95, likes: 380 },
+    { title: "Top 5 Sustainable Fashion Brands to Shop Now", author: "Lucas Martinez", comments: 75, likes: 290 },
+    { title: "How to Style Your Outfits Like a Pro", author: "Ava White", comments: 140, likes: 510 },
+    { title: "Grocery Shopping Tips to Save Money & Time", author: "Noah Brown", comments: 50, likes: 180 },
+    { title: "Best Makeup Brands for Every Skin Type", author: "Liam Anderson", comments: 110, likes: 400 },
   ];
 
   return (

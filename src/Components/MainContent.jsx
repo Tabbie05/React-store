@@ -15,13 +15,12 @@ function MainContent() {
   const totalPages = Math.ceil(totalProducts / itemPerPage);
 
   useEffect(() => {
-    let url = `https://dummyjson.com/products?limit=${itemPerPage}&skip=${
-      (currentPage - 1) * itemPerPage
-    }`;
+    let url = "https://dummyjson.com/products?limit=100"; // Fetch all products
+  
     if (keyword) {
       url = `https://dummyjson.com/products/search?q=${keyword}`;
     }
-
+  
     axios
       .get(url)
       .then((res) => {
@@ -30,7 +29,8 @@ function MainContent() {
       .catch((e) => {
         console.log(e);
       });
-  }, [currentPage, keyword, max, min, query, category]);
+  }, [keyword,min,max,category,query]); // Only depend on keyword for API call
+  
 
   const getFilteredProducts = () => {
     let filtered = [...products];
