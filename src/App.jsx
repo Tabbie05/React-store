@@ -21,7 +21,7 @@ function App() {
                 <TopSeller />
                 <PopularBlogs />
               </div>
-            </div>
+            </div> 
           }/>
           <Route path="/Product/:id" element={
             <div className="bg-white min-h-screen">

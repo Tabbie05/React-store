@@ -14,25 +14,29 @@ function MainContent() {
   const itemsPerPage = 12;
 
   useEffect(() => {
-    const url = keyword
-      ? `https://dummyjson.com/products/search?q=${keyword}`
-      : "https://dummyjson.com/products?limit=100";
+    const fetchProducts = async () => {
+      try {
+        const url =
+          keyword && keyword.trim() !== ""
+            ? `https://dummyjson.com/products/search?q=${keyword}`
+            : "https://dummyjson.com/products?limit=100";
 
-    axios.get(url).then((res) => {
-      setProducts(res.data.products || []);
-    });
+        const res = await axios.get(url);
+        setProducts(res.data.products || []);
+        setCurrentPage(1); // reset to page 1 after new fetch
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      }
+    };
+
+    fetchProducts();
   }, [keyword]);
 
   const filteredProducts = products
-    .filter((p) =>
-      category ? p.category === category : true
-    )
-    .filter((p) =>
-      min ? p.price >= +min : true
-    )
-    .filter((p) =>
-      max ? p.price <= +max : true
-    )
+    .filter((p) => (category ? p.category === category : true))
+    .filter((p) => (min ? p.price >= +min : true))
+    .filter((p) => (max ? p.price <= +max : true))
     .filter((p) =>
       query ? p.title.toLowerCase().includes(query.toLowerCase()) : true
     )
@@ -44,6 +48,7 @@ function MainContent() {
     });
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
   const shownProducts = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -57,7 +62,7 @@ function MainContent() {
 
   return (
     <section className="p-5 bg-white max-w-[80rem] mx-auto">
-      {/* Filter Button */}
+      {/* Filter Dropdown */}
       <div className="relative inline-block mb-4">
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -82,50 +87,58 @@ function MainContent() {
         )}
       </div>
 
-      {/* Product Cards */}
+      {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {shownProducts.map((p) => (
-          <BookCard
-            key={p.id}
-            id={p.id}
-            title={p.title}
-            image={p.thumbnail}
-            price={p.price}
-            discountPercentage={p.discountPercentage}
-          />
-        ))}
+        {shownProducts.length > 0 ? (
+          shownProducts.map((p) => (
+            <BookCard
+              key={p.id}
+              id={p.id}
+              title={p.title}
+              image={p.thumbnail}
+              price={p.price}
+              discountPercentage={p.discountPercentage}
+            />
+          ))
+        ) : (
+          <div className="col-span-full text-center text-gray-500">
+            No products found.
+          </div>
+        )}
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-6">
-        <button
-          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-          disabled={currentPage === 1}
-          className="px-3 py-1 border rounded hover:bg-gray-200 disabled:opacity-50"
-        >
-          Prev
-        </button>
-
-        {[...Array(totalPages)].map((_, i) => (
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-6 flex-wrap">
           <button
-            key={i}
-            onClick={() => setCurrentPage(i + 1)}
-            className={`px-3 py-1 border rounded-full ${
-              currentPage === i + 1 ? "bg-black text-white" : "hover:bg-gray-200"
-            }`}
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 border rounded hover:bg-gray-200 disabled:opacity-50"
           >
-            {i + 1}
+            Prev
           </button>
-        ))}
 
-        <button
-          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 border rounded hover:bg-gray-200 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-3 py-1 border rounded-full ${
+                currentPage === i + 1 ? "bg-black text-white" : "hover:bg-gray-200"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 border rounded hover:bg-gray-200 disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </section>
   );
 }

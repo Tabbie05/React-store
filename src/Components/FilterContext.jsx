@@ -15,7 +15,7 @@ export const FilterProvider = ({ children }) => {
     <FilterContext.Provider value={{ query, setQuery, category, setCategory, min, setMin, max, setMax, keyword, setKeyword }}>
       {children}
     </FilterContext.Provider>
-  );
+  );   
 };
 
 // Custom Hook to use FilterContext
