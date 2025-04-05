@@ -7,8 +7,8 @@ export const FilterContext = createContext();
 export const FilterProvider = ({ children }) => {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
-  const [min, setMin] = useState("");  // Changed from undefined to ""
-  const [max, setMax] = useState("");  // Changed from undefined to ""
+  const [min, setMin] = useState("");  
+  const [max, setMax] = useState("");  
   const [keyword, setKeyword] = useState("");
 
   return (

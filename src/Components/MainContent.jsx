@@ -1,171 +1,127 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { LuTally3 } from "react-icons/lu";
-import { useFilter } from "./FilterContext";
 import BookCard from "./BookCard";
+import { useFilter } from "./FilterContext";
 
 function MainContent() {
   const { query, category, min, max, keyword } = useFilter();
-  const [products, setproducts] = useState([]);
-  const [filter, setfilter] = useState("all");
-  const [dropdownOpen, setdropdownOpen] = useState(false);
-  const [currentPage, setcurrentPage] = useState(1);
-  const itemPerPage = 12;
-  const totalProducts = 100;
-  const totalPages = Math.ceil(totalProducts / itemPerPage);
+
+  const [products, setProducts] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   useEffect(() => {
-    let url = "https://dummyjson.com/products?limit=100"; // Fetch all products
-  
-    if (keyword) {
-      url = `https://dummyjson.com/products/search?q=${keyword}`;
-    }
-  
-    axios
-      .get(url)
-      .then((res) => {
-        setproducts(res.data.products || []);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, [keyword,min,max,category,query]); // Only depend on keyword for API call
-  
+    const url = keyword
+      ? `https://dummyjson.com/products/search?q=${keyword}`
+      : "https://dummyjson.com/products?limit=100";
 
-  const getFilteredProducts = () => {
-    let filtered = [...products];
+    axios.get(url).then((res) => {
+      setProducts(res.data.products || []);
+    });
+  }, [keyword]);
 
-    if (category) {
-      filtered = filtered.filter((product) => product.category === category);
-    }
+  const filteredProducts = products
+    .filter((p) =>
+      category ? p.category === category : true
+    )
+    .filter((p) =>
+      min ? p.price >= +min : true
+    )
+    .filter((p) =>
+      max ? p.price <= +max : true
+    )
+    .filter((p) =>
+      query ? p.title.toLowerCase().includes(query.toLowerCase()) : true
+    )
+    .sort((a, b) => {
+      if (filter === "cheap") return a.price - b.price;
+      if (filter === "expensive") return b.price - a.price;
+      if (filter === "popular") return b.rating - a.rating;
+      return 0;
+    });
 
-    if (min !== undefined && min !== "") {
-      filtered = filtered.filter((product) => product.price >= Number(min));
-    }
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const shownProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
-    if (max !== undefined && max !== "") {
-      filtered = filtered.filter((product) => product.price <= Number(max));
-    }
-
-    if (query) {
-      filtered = filtered.filter((product) =>
-        product.title.toLowerCase().includes(query.toLowerCase())
-      );
-    }
-
-    switch (filter) {
-      case "expensive":
-        return [...filtered].sort((a, b) => b.price - a.price);
-      case "cheap":
-        return [...filtered].sort((a, b) => a.price - b.price);
-      case "popular":
-        return [...filtered].sort((a, b) => b.rating - a.rating);
-      default:
-        return filtered;
-    }
-  };
-
-  const filteredProducts = getFilteredProducts();
-
-  const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
-      setcurrentPage(page);
-    }
+  const changeFilter = (type) => {
+    setFilter(type);
+    setCurrentPage(1);
+    setDropdownOpen(false);
   };
 
   return (
-    <section className="xl:w-[70rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 bg-white">
-      <div className="relative inline-block">
+    <section className="p-5 bg-white max-w-[80rem] mx-auto">
+      {/* Filter Button */}
+      <div className="relative inline-block mb-4">
         <button
-          onClick={() => setdropdownOpen(!dropdownOpen)}
-          className="px-4 py-2 rounded-full flex items-center gap-1 bg-white border border-gray-300 shadow-md hover:bg-gray-100 transition-all"
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className="flex items-center gap-2 px-4 py-2 border rounded-full shadow bg-white hover:bg-gray-100"
         >
-          <LuTally3 size={25} />
-          {filter === "all"
-            ? "Filter"
-            : filter.charAt(0).toUpperCase() + filter.slice(1)}
+          <LuTally3 />
+          {filter === "all" ? "Filter" : filter.charAt(0).toUpperCase() + filter.slice(1)}
         </button>
 
         {dropdownOpen && (
-          <div className="absolute left-0 mt-2 w-44 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
-            <button
-              onClick={() => setfilter("cheap")}
-              className="block px-4 py-2 w-full text-left hover:bg-gray-200"
-            >
-              Cheap
-            </button>
-            <button
-              onClick={() => setfilter("expensive")}
-              className="block px-4 py-2 w-full text-left hover:bg-gray-200"
-            >
-              Expensive
-            </button>
-            <button
-              onClick={() => setfilter("popular")}
-              className="block px-4 py-2 w-full text-left hover:bg-gray-200"
-            >
-              Popular
-            </button>
+          <div className="absolute z-10 bg-white border rounded shadow w-40 mt-2">
+            {["cheap", "expensive", "popular"].map((f) => (
+              <button
+                key={f}
+                onClick={() => changeFilter(f)}
+                className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+              >
+                {f.charAt(0).toUpperCase() + f.slice(1)}
+              </button>
+            ))}
           </div>
         )}
       </div>
 
-      {/* Display Products */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-3">
-        {filteredProducts.map((product) => (
+      {/* Product Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {shownProducts.map((p) => (
           <BookCard
-            key={product.id}
-            id={product.id}
-            title={product.title}
-            image={product.thumbnail}
-            price={product.price}
-            discountPercentage={product.discountPercentage}
+            key={p.id}
+            id={p.id}
+            title={p.title}
+            image={p.thumbnail}
+            price={p.price}
+            discountPercentage={p.discountPercentage}
           />
         ))}
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center items-center mt-4 gap-2">
-        {/* Previous Button */}
+      <div className="flex justify-center gap-2 mt-6">
         <button
-          className={`border p-2 rounded ${
-            currentPage === 1
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-gray-200"
-          }`}
-          onClick={() => handlePageChange(currentPage - 1)}
+          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
           disabled={currentPage === 1}
+          className="px-3 py-1 border rounded hover:bg-gray-200 disabled:opacity-50"
         >
-          Previous
+          Prev
         </button>
 
-        {/* Page Numbers */}
-        {[...Array(Math.min(totalPages, 5))].map((_, i) => {
-          const page = i + 1;
-          return (
-            <button
-              key={page}
-              onClick={() => handlePageChange(page)}
-              className={`border px-3 py-1 rounded-full ${
-                currentPage === page
-                  ? "bg-black text-white"
-                  : "hover:bg-gray-200"
-              }`}
-            >
-              {page}
-            </button>
-          );
-        })}
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`px-3 py-1 border rounded-full ${
+              currentPage === i + 1 ? "bg-black text-white" : "hover:bg-gray-200"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
 
-        {/* Next Button */}
         <button
-          className={`border p-2 rounded ${
-            currentPage === totalPages
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-gray-600"
-          }`}
-          onClick={() => handlePageChange(currentPage + 1)}
+          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
           disabled={currentPage === totalPages}
+          className="px-3 py-1 border rounded hover:bg-gray-200 disabled:opacity-50"
         >
           Next
         </button>
